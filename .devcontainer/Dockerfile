@@ -45,6 +45,29 @@ RUN rm -rf /usr/local/go && tar -C /usr/local -xzf /tmp/go1.23.3.linux-amd64.tar
 
 ENV PATH=$PATH:/usr/local/go/bin
 
+RUN wget https://download.java.net/java/GA/jdk22.0.1/c7ec1332f7bb44aeba2eb341ae18aca4/8/GPL/openjdk-22.0.1_linux-x64_bin.tar.gz
+
+RUN tar xvf openjdk-22.0.1_linux-x64_bin.tar.gz
+
+RUN mv jdk-22.0.1 /usr/lib/jvm
+
+RUN update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/jdk-22.0.1/bin/javac 2211
+RUN update-alternatives --install /usr/bin/java java /usr/lib/jvm/jdk-22.0.1/bin/java 2211
+
+RUN rm openjdk-22.0.1_linux-x64_bin.tar.gz
+
+RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
+
+RUN apt install -y nodejs
+
+RUN node --dns-result-order=ipv4first /usr/bin/npm  install -g bower
+
+
+# Ensure sudo group users are not 
+# asked for a password when using 
+# sudo command by ammending sudoers file
+RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> \
+/etc/sudoers
 
     
     

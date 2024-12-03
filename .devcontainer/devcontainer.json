@@ -15,13 +15,15 @@
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
 		"ms-vscode.cpptools",
-		"twxs.cmake",
+		"ms-vscode.cpptools-extension-pack",
+		"ms-vscode.cpptools-themes"
 		"ms-vscode.cmake-tools",
+		"twxs.cmake",
 		"mhutchie.git-graph",
 		"austin.code-gnu-global",
-		"ms-vscode.cpptools-extension-pack"
+		"ms-azuretools.vscode-docker",
+		"golang.go",
 	],
-
 	
 	"mounts": [
 		"source=${localEnv:HOME}/.ssh,target=/home/ubuntu/.ssh,type=bind,consistency=cached"
