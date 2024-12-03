@@ -10,3 +10,16 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 CMakeUserPresets.json
+build
+debian/.debhelper
+debian/lkendpoint
+debian/lkendpoint-dbg
+debian/lkendpoint-dev
+debian/tmp
+debian/lkendpoint-dbg.debhelper.log
+debian/lkendpoint-dbg.substvars
+debian/lkendpoint-dev.debhelper.log
+debian/lkendpoint-dev.substvars
+debian/lkendpoint.debhelper.log
+debian/lkendpoint.substvars
+

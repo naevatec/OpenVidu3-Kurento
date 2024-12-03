@@ -1,0 +1,125 @@
+{
+"complexTypes": [
+  {
+    "typeFormat": "REGISTER",
+    "properties": [
+      {
+        "name": "originIp",
+        "doc": "Ip of the http requester",
+        "type": "String"
+      },
+      {
+        "name": "endpoint",
+        "doc": "WebRTCEndpoint that serves that receiver",
+        "type": "WebRtcEndpoint"
+      }
+    ],
+    "name": "ReceiverInfo",
+    "doc": "Information of a certaing receiver of this Whep stream"
+  }
+],
+"remoteClasses": [
+    {
+      "name": "OV3Subscriber",
+      "extends": "MediaElement",
+      "doc": "",
+      "constructor":
+      {
+        "doc": "Builder for the :rom:cls:`OV3Subscriber`",
+        "params": [
+          {
+            "name": "mediaPipeline",
+            "doc": "the :rom:cls:`MediaPipeline` to which the endpoint belongs",
+            "type": "MediaPipeline"
+          },
+          {
+            "name": "url",
+            "doc": "URL of the OpenVidu3 service",
+            "type": "String",
+            "defaultValue": null
+          },
+          {
+            "name": "secret",
+            "doc": "Secret to access OpenVidu3 service",
+            "type": "String",
+            "defaultValue": null
+          },
+          {
+            "name": "key",
+            "doc": "Key to access OpenVidu3 service",
+            "type": "String",
+            "defaultValue": null
+          }
+        ]
+      },
+      "properties": [
+        {
+          "name": "url",
+          "doc": "URL of the OpenVidu3 service",
+          "type": "String",
+          "readOnly": true
+        },
+        {
+          "name": "room",
+          "doc": "Room in OpenVidu3 service to connect to",
+          "type": "String",
+          "readOnly": true
+        },
+        {
+          "name": "participantId",
+          "doc": "Id of the particfipant in the room whose tracks are going to be subscribed",
+          "type": "String",
+          "readOnly": true
+        },
+        {
+          "name": "screenShare",
+          "doc": "Subscribing to screen share track",
+          "type": "boolean",
+          "readOnly": true
+        },
+        {
+          "name": "isConnected",
+          "doc": "Is OpenVidu3 subscriber connected",
+          "type": "boolean",
+          "readOnly": true
+        }
+      ],
+      "methods": [
+        {
+          "name": "subscribeParticipant",
+          "doc": "Subscribes to a OpenVidu3 participant in a room, distinguishes screen share or not",
+          "params": [
+            {
+              "name": "room",
+              "doc": "Room in OpenVidu3 service to connect to",
+              "type": "String",
+              "defaultValue": null
+            },
+            {
+              "name": "participantId",
+              "doc": "Id of the participant in the room whose tracks are going to be subscribed",
+              "type": "String",
+              "defaultValue": null
+            },
+            {
+              "name": "screenShare",
+              "doc": "Subscribing to screen share tracks",
+              "type": "boolean",
+              "defaultValue": false
+            }
+  
+          ],
+          "return": {
+            "doc": "success condition",
+            "type": "boolean"
+          }
+        }, 
+        {
+          "name": "requestKeyFrame",
+          "doc": "Request a keyframe for the video track of this subscription",
+          "params": [ ]
+        }
+      ]
+    }
+  ]
+}

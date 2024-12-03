@@ -1,0 +1,37 @@
+Source: ov3endpoint
+Maintainer: NaevaTec <info@naevatec.com>
+Priority: optional
+Build-Depends: debhelper (>= 9),
+ cmake,
+ pkg-config,
+ kurento-module-core-dev (>= 7.0.0),
+ kurento-module-elements-dev (>= 7.0.0),
+ kurento-module-filters-dev (>= 7.0.0),
+Standards-Version: 4.0.0
+Homepage: www.naevatec.com
+Vcs-Browser: https://
+Vcs-Git: https://
+
+Package: ov3endpoint
+Architecture: any
+Section: libs
+Depends: ${shlibs:Depends}, ${misc:Depends},
+ kurento-module-core (>= 7.0.0),
+ kurento-module-elements (>= 7.0.0),
+ kurento-module-filters (>= 7.0.0)
+Description: Kurento OpenVidu3 Endpoint
+
+Package: ov3endpoint-dev
+Architecture: any
+Section: libdevel
+Depends: ov3endpoint (= ${binary:Version}),
+ kurento-module-core-dev (>= 7.0.0),
+ kurento-module-elements-dev (>= 7.0.0),
+ kurento-module-filters-dev (>= 7.0.0),
+Description: Kurento OpenVidu3 subscriber - Development files
+
+Package: ov3endpoint-dbg
+Architecture: any
+Section: debug
+Depends: ov3endpoint (= ${binary:Version})
+Description: Kurento OpenVidu3 subscriber - Debug symbols

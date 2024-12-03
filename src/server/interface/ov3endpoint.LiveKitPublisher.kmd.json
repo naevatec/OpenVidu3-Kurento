@@ -1,0 +1,129 @@
+{
+"remoteClasses": [
+    {
+      "name": "OV3Publisher",
+      "extends": "MediaElement",
+      "doc": "",
+      "constructor":
+      {
+        "doc": "Builder for the :rom:cls:`OV3Publisher`",
+        "params": [
+          {
+            "name": "mediaPipeline",
+            "doc": "the :rom:cls:`MediaPipeline` to which the endpoint belongs",
+            "type": "MediaPipeline"
+          },
+          {
+            "name": "url",
+            "doc": "URL of the OpenVidu3 service",
+            "type": "String",
+            "defaultValue": null
+          },
+          {
+            "name": "secret",
+            "doc": "Secret to access OpenVidu3 service",
+            "type": "String",
+            "defaultValue": null
+          },
+          {
+            "name": "key",
+            "doc": "Key to access OpenVidu3 service",
+            "type": "String",
+            "defaultValue": null
+          },
+          {
+            "name": "room",
+            "doc": "Room in OpenVidu3 service to connect to",
+            "type": "String",
+            "defaultValue": null
+          },
+          {
+            "name": "participantName",
+            "doc": "Identifier for the participant that will be publishing",
+            "type": "String",
+            "defaultValue": null
+          },
+          {
+            "name": "participantId",
+            "doc": "Identifier for the participant that will be publishing",
+            "type": "String",
+            "optional": true,
+            "defaultValue": null
+          },
+          {
+            "name": "screenShare",
+            "doc": "Subscribing to screen share tracks",
+            "type": "boolean",
+            "optional": true,
+            "defaultValue": false
+          }
+        ]
+      },
+      "properties": [
+        {
+          "name": "url",
+          "doc": "URL of the OpenVidu3 service",
+          "type": "String",
+          "readOnly": true
+        },
+        {
+          "name": "room",
+          "doc": "Room in OpenVidu3 service to connect to",
+          "type": "String",
+          "readOnly": true
+        },
+        {
+          "name": "participantId",
+          "doc": "Id of the participant publishing tracks to the room",
+          "type": "String",
+          "readOnly": true
+        },
+        {
+          "name": "participantName",
+          "doc": "Name of the participant publishing tracks to the room",
+          "type": "String",
+          "readOnly": true
+        },
+        {
+          "name": "screenShare",
+          "doc": "Subscribing to screen share track",
+          "type": "boolean",
+          "readOnly": true
+        },
+        {
+          "name": "isConnected",
+          "doc": "Is OpenVidu3 subscriber connected",
+          "type": "boolean",
+          "readOnly": true
+        }
+      ],
+      "methods": [
+        {
+          "name": "publishParticipant",
+          "doc": "Publishes to a OpenVidu3 participant in a room, distinguishes screen share or not",
+          "params": [
+            {
+              "name": "publishAudio",
+              "doc": "Flag to signal if the publisher must publish an audio track, default is true",
+              "type": "boolean",
+              "optional": true,
+              "defaultValue": true
+            },
+            {
+              "name": "publishVideo",
+              "doc": "Flag to signal if the publisher must publish a video track, default is true",
+              "type": "boolean",
+              "optional": true,
+              "defaultValue": true
+            }
+  
+          ],
+          "return": {
+            "doc": "success condition",
+            "type": "boolean"
+          }
+        }
+      ]
+    }
+  ]
+}

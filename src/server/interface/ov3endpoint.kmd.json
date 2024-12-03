@@ -1,0 +1,28 @@
+{
+  "name": "ov3endpoint",
+  "version": "0.2.38",
+  "kurentoVersion": "^7.0.0",
+  "code": {
+//    "kmd": {
+//      "java": {
+//        "mavenGroupId": "com.naevatec",
+//        "mavenArtifactId": "bfcp"
+//      }
+//    },
+//    "api": {
+//     "java": {
+//        "packageName": "com.naevatec.bfcp.client",
+//        "mavenGroupId": "com.naevatec",
+//        "mavenArtifactId": "bfcp-client"
+//      },
+//      "js": {
+//        "nodeName": "kurento-client-bfcp",
+//        "npmDescription": "JavaScript Client API for BfcpEndpoint",
+//        "npmGit": "naevatec/kurento-client-bfcp-js"
+//      }
+//    },
+    "implementation": {
+      "cppNamespace": "kurento"
+    }
+  }
+}

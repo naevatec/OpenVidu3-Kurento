@@ -1,0 +1,3 @@
+usr/include/kurento/modules/*/*.hpp
+usr/lib/*/pkgconfig/*.pc
+usr/share/kurento/modules/*.kmd.json
