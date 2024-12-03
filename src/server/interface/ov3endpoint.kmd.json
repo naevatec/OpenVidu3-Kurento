@@ -6,19 +6,19 @@
 //    "kmd": {
 //      "java": {
 //        "mavenGroupId": "com.naevatec",
-//        "mavenArtifactId": "bfcp"
+//        "mavenArtifactId": "ov3endpoint"
 //      }
 //    },
 //    "api": {
 //     "java": {
-//        "packageName": "com.naevatec.bfcp.client",
+//        "packageName": "com.naevatec.ov3endpoint",
 //        "mavenGroupId": "com.naevatec",
-//        "mavenArtifactId": "bfcp-client"
+//        "mavenArtifactId": "ov3endpoint-client"
 //      },
 //      "js": {
-//        "nodeName": "kurento-client-bfcp",
-//        "npmDescription": "JavaScript Client API for BfcpEndpoint",
-//        "npmGit": "naevatec/kurento-client-bfcp-js"
+//        "nodeName": "kurento-client-ov3",
+//        "npmDescription": "JavaScript Client API for OpenVidu3",
+//        "npmGit": "naevatec/kurento-client-ov3-js"
 //      }
 //    },
     "implementation": {
