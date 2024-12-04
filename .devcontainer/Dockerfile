@@ -29,6 +29,8 @@ RUN apt install -y --no-install-recommends \
 
 RUN apt install -y equivs
 
+RUN apt install -y devscripts
+
 ENV NODE_OPTIONS="--dns-result-order=ipv4first"
     
 RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
