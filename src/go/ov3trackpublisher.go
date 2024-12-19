@@ -34,14 +34,14 @@ import (
 	"unsafe"
 
 	"github.com/frostbyte73/core"
+	"github.com/go-gst/go-glib/glib"
+	"github.com/go-gst/go-gst/gst"
+	"github.com/go-gst/go-gst/gst/app"
 	"github.com/livekit/protocol/livekit"
-	lksdk "github.com/livekit/server-sdk-go"
+	lksdk "github.com/livekit/server-sdk-go/v2"
 	"github.com/pion/rtcp"
 	"github.com/pion/rtp"
-	"github.com/pion/webrtc/v3"
-	"github.com/tinyzimmer/go-glib/glib"
-	"github.com/tinyzimmer/go-gst/gst"
-	"github.com/tinyzimmer/go-gst/gst/app"
+	"github.com/pion/webrtc/v4"
 )
 
 type ov3TrackPublisher struct {
@@ -339,7 +339,7 @@ func (tr *ov3TrackPublisher) ReadSamples() {
 		element := tr.element
 		if element != nil {
 			tr.Unlock()
-			sample = element.TryPullSample(500 * time.Millisecond)
+			sample = element.TryPullSample(gst.ClockTime(500 * time.Millisecond))
 		} else {
 			if tr.endStream.IsBroken() {
 				tr.Unlock()

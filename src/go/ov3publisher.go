@@ -5,9 +5,8 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/frostbyte73/core"
-	lksdk "github.com/livekit/server-sdk-go"
-	"github.com/tinyzimmer/go-gst/gst"
+	"github.com/go-gst/go-gst/gst"
+	lksdk "github.com/livekit/server-sdk-go/v2"
 )
 
 type ov3Publisher struct {
@@ -44,7 +43,6 @@ func (pub *ov3Publisher) createTrackPublisher(kind lksdk.TrackKind, bin *gst.Bin
 
 	root.logger.Debugw(fmt.Sprintf("createTrackPublisher: creating sink pipeline for track %s %s", kind, pub.id))
 	trPub = &ov3TrackPublisher{}
-	trPub.endStream = core.NewFuse()
 	trPub.publisher = pub
 	trPub.kind = kind
 	trPub.bin = bin

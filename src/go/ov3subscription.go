@@ -7,14 +7,13 @@ import (
 	"sync"
 	"time"
 
-	"github.com/frostbyte73/core"
+	"github.com/go-gst/go-gst/gst"
 	guuid "github.com/google/uuid"
 	"github.com/livekit/egress/pkg/types"
 	"github.com/livekit/protocol/livekit"
-	lksdk "github.com/livekit/server-sdk-go"
+	lksdk "github.com/livekit/server-sdk-go/v2"
 	"github.com/pion/rtcp"
-	"github.com/pion/webrtc/v3"
-	"github.com/tinyzimmer/go-gst/gst"
+	"github.com/pion/webrtc/v4"
 )
 
 type ov3Subscription struct {
@@ -71,9 +70,6 @@ func (subs *ov3Subscription) createWriter(track *webrtc.TrackRemote, pub *lksdk.
 		ClockRate:    track.Codec().ClockRate,
 		subscription: subs,
 		nullSamples:  0,
-		draining:     core.NewFuse(),
-		endStream:    core.NewFuse(),
-		finished:     core.NewFuse(),
 		lastPLI:      time.Now().Add(-10 * time.Second), // First PLI should not be stopped by rate limiter
 		dropping:     false,
 		retransmit:   make(chan uint16, 20),
@@ -389,7 +385,7 @@ func (lk *ov3Subscription) checkTracksToSubscribe(p *lksdk.RemoteParticipant) {
 		return
 	}
 
-	for _, track := range p.Tracks() {
+	for _, track := range p.TrackPublications() {
 		if pub, ok := track.(*lksdk.RemoteTrackPublication); ok {
 			if pub != nil {
 				source := pub.Source()
@@ -442,7 +438,7 @@ func (lk *ov3Subscription) updateSubscription(oldTrack *lkTrack, newTrack *lkTra
 func (lk *ov3Subscription) makeSubscription() {
 	room := lk.room
 
-	for _, p := range room.roomSvc.GetParticipants() {
+	for _, p := range room.roomSvc.GetRemoteParticipants() {
 		if p.Identity() == lk.participant {
 			root.logger.Debugw(fmt.Sprintf("makeSubscription: checking existent tracks to subscribe for participant %s", lk.participant))
 			lk.checkTracksToSubscribe(p)

@@ -1,9 +1,6 @@
 package main
 
 // #include <gst/app/gstappsrc.h>
-// #include <gst/gstpad.h>
-// #include <gst/gstbin.h>
-// #include <gst/gstelement.h>
 import "C"
 
 // gst-go reelase must be coupled to compiling OS, for ubuntu 2.20, that is gstreamer 1.16, gst-go v0.2.16 seems to be needed
@@ -16,10 +13,10 @@ import (
 
 	"github.com/pion/rtp"
 
+	"github.com/go-gst/go-glib/glib"
+	"github.com/go-gst/go-gst/gst"
+	"github.com/go-gst/go-gst/gst/app"
 	"github.com/livekit/egress/pkg/types"
-	"github.com/tinyzimmer/go-glib/glib"
-	"github.com/tinyzimmer/go-gst/gst"
-	"github.com/tinyzimmer/go-gst/gst/app"
 
 	"github.com/livekit/livekit-server/pkg/sfu/buffer"
 	"github.com/livekit/livekit-server/pkg/sfu/codecmunger"
@@ -100,7 +97,7 @@ func (t *VP8Translator) Translate(pkt *rtp.Packet) {
 
 	ep := &buffer.ExtPacket{
 		Packet:   pkt,
-		Arrival:  time.Now(),
+		Arrival:  time.Now().UnixNano(),
 		Payload:  vp8Packet,
 		KeyFrame: vp8Packet.IsKeyFrame,
 		VideoLayer: buffer.VideoLayer{
@@ -113,23 +110,20 @@ func (t *VP8Translator) Translate(pkt *rtp.Packet) {
 		t.firstPktPushed = true
 		t.vp8Munger.SetLast(ep)
 	} else {
-		tpVP8, err := t.vp8Munger.UpdateAndGet(ep, false, pkt.SequenceNumber != t.lastSN+1, ep.Temporal)
+		incomingHeaderSize, header, err := t.vp8Munger.UpdateAndGet(ep, false, pkt.SequenceNumber != t.lastSN+1, ep.Temporal)
 		if err != nil {
 			root.logger.Infow("Translate: (VP8) could not update VP8 packet")
 			return
 		}
-		pkt.Payload = translateVP8Packet(ep.Packet, &vp8Packet, tpVP8, &pkt.Payload)
+		pkt.Payload = translateVP8Packet(ep.Packet, &vp8Packet, header, incomingHeaderSize, &pkt.Payload)
 	}
 }
 
-func translateVP8Packet(pkt *rtp.Packet, incomingVP8 *buffer.VP8, translatedVP8 []byte, outbuf *[]byte) []byte {
-	buf := (*outbuf)[:len(pkt.Payload)+len(translatedVP8)-incomingVP8.HeaderSize]
-	srcPayload := pkt.Payload[incomingVP8.HeaderSize:]
-	dstPayload := buf[len(translatedVP8):]
-	copy(dstPayload, srcPayload)
-
-	copy(buf[:len(translatedVP8)], translatedVP8)
-	return buf
+func translateVP8Packet(pkt *rtp.Packet, incomingVP8 *buffer.VP8, header []byte, headerSize int, outbuf *[]byte) []byte {
+	payload := make([]byte, 1460)
+	copy(payload, header)
+	n := copy(payload[len(header):], pkt.Payload[headerSize:])
+	return payload[:len(header)+n]
 }
 
 // Null
@@ -282,7 +276,6 @@ func (lk *ov3Subscriber) prepareTrackGstBin(audio bool, bin *gst.Bin, trackId st
 	bin.AddMany(jitterBuffer, rtcpSource.Element, rtpSource.Element, depayloader)
 	rtpSource.Link(jitterBuffer)
 	rtcpSinkPad := jitterBuffer.GetRequestPad("sink_rtcp")
-	//rtcpSinkPad := gst.FromGstPadUnsafeFull(unsafe.Pointer(C.gst_element_get_request_pad_simple((*C.GstElement)(unsafe.Pointer(jitterBuffer.Instance())), C.CString("sink_rtcp"))))
 	rtcpSrcPad := rtcpSource.GetStaticPad("src")
 	rtcpSrcPad.Link(rtcpSinkPad)
 	jitterBuffer.Link(depayloader)

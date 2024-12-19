@@ -11,11 +11,11 @@ import (
 	"strings"
 	"unsafe"
 
+	"github.com/go-gst/go-glib/glib"
+	"github.com/go-gst/go-gst/gst"
 	guuid "github.com/google/uuid"
 	"github.com/livekit/protocol/livekit"
-	lksdk "github.com/livekit/server-sdk-go"
-	"github.com/tinyzimmer/go-glib/glib"
-	"github.com/tinyzimmer/go-gst/gst"
+	lksdk "github.com/livekit/server-sdk-go/v2"
 )
 
 func createEgressId() string {

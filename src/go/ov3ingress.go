@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/go-gst/go-gst/gst"
 	guuid "github.com/google/uuid"
 	"github.com/livekit/protocol/ingress"
-	lksdk "github.com/livekit/server-sdk-go"
-	"github.com/tinyzimmer/go-gst/gst"
+	lksdk "github.com/livekit/server-sdk-go/v2"
 )
 
 type ov3Ingress struct {
@@ -53,7 +53,7 @@ func (ing *ov3Ingress) lkTrackUnmuted(pub lksdk.TrackPublication, p lksdk.Partic
 func (ing *ov3Ingress) makeRoomIngressConnection(ingressId string, participant string) error {
 	root.logger.Debugw(fmt.Sprintf("makeRoomIngressConnection: with ingressId %s from %s", ingressId, participant))
 	room := ing.room
-	token, err := ingress.BuildIngressToken(room.service.key, room.service.secret, room.room, ingressId, participant)
+	token, err := ingress.BuildIngressToken(room.service.key, room.service.secret, room.room, ingressId, participant, "")
 	if err != nil {
 		return err
 	}
@@ -67,7 +67,7 @@ func (ing *ov3Ingress) makeRoomIngressConnection(ingressId string, participant s
 		OnReconnecting: ing.lkReconnecting,
 		OnReconnected:  ing.lkReconnected,
 	}
-	ing.roomSvc = lksdk.CreateRoom(cb)
+	ing.roomSvc = lksdk.NewRoom(cb)
 	if err := ing.roomSvc.JoinWithToken(room.service.url, room.token, lksdk.WithAutoSubscribe(false)); err != nil {
 		return err
 	}

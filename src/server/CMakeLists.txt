@@ -16,3 +16,8 @@ generate_code (
   SERVER_IMPL_LIB_EXTRA_LIBRARIES ${LIBBFCP_LIBRARIES}
   SERVER_STUB_DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/implementation/objects
 )
+
+add_custom_target( maven_install  
+                    COMMAND mvn install:install-file -Dfile=${CMAKE_BINARY_DIR}/java/target/ov3endpoint-1.0.0.jar -DgroupId=org.kurento.module -DartifactId=ov3endpoint -Dversion=1.0.0 -Dpackaging=jar 
+                    COMMENT "Installing client library in local maven repository"
+                    DEPENDS java )

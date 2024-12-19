@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/go-gst/go-gst/gst"
 	"github.com/livekit/protocol/egress"
 	"github.com/livekit/protocol/livekit"
-	lksdk "github.com/livekit/server-sdk-go"
-	"github.com/pion/webrtc/v3"
-	"github.com/tinyzimmer/go-gst/gst"
+	lksdk "github.com/livekit/server-sdk-go/v2"
+	"github.com/pion/webrtc/v4"
 )
 
 type ov3Room struct {
@@ -403,7 +403,7 @@ func (room *ov3Room) makeRoomConnection(egressId string) error {
 		OnParticipantDisconnected: room.lkParticipantDisconnected,
 		OnActiveSpeakersChanged:   room.lkActiveSpeakersChanged,
 	}
-	room.roomSvc = lksdk.CreateRoom(cb)
+	room.roomSvc = lksdk.NewRoom(cb)
 	if err := room.roomSvc.JoinWithToken(room.service.url, room.token, lksdk.WithAutoSubscribe(false)); err != nil {
 		return err
 	}

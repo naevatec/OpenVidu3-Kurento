@@ -11,14 +11,14 @@ import (
 	"time"
 
 	"github.com/frostbyte73/core"
+	"github.com/go-gst/go-gst/gst"
+	"github.com/go-gst/go-gst/gst/app"
 	"github.com/livekit/egress/pkg/types"
 	"github.com/livekit/protocol/logger"
-	lksdk "github.com/livekit/server-sdk-go"
+	lksdk "github.com/livekit/server-sdk-go/v2"
 	"github.com/pion/rtcp"
 	"github.com/pion/rtp"
-	"github.com/pion/webrtc/v3"
-	"github.com/tinyzimmer/go-gst/gst"
-	"github.com/tinyzimmer/go-gst/gst/app"
+	"github.com/pion/webrtc/v4"
 )
 
 type AppWriter struct {
