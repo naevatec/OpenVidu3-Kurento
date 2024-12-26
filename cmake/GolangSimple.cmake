@@ -52,12 +52,12 @@ function(ADD_GO_SHARED_LIBRARY NAME OUTPUT_PATH SRCS DEPS)
                 COMMAND env GOPATH=${CMAKE_CURRENT_BINARY_DIR} 
                     CGO_CFLAGS='-O2 -g -pthread -I/usr/include/gstreamer-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include' 
                     CGO_LDFLAGS='-O2 -g -lgstvideo-1.0 -lgstreamer-1.0 -lgobject-2.0 -lglib-2.0' go build 
-                    -o "lib${NAME}.so"
+                    -o "${CMAKE_CURRENT_BINARY_DIR}/lib${NAME}.so"
                     -buildmode=c-shared
                     ${CMAKE_GO_FLAGS} ${SRCS}
-                COMMAND cp "lib${NAME}.so" "${OUTPUT_PATH}"
-                COMMAND cp "lib${NAME}.h" "${OUTPUT_PATH}"
-                BYPRODUCTS lib${NAME}.so
+                COMMAND cp "${CMAKE_CURRENT_BINARY_DIR}/lib${NAME}.so" "${OUTPUT_PATH}"
+                COMMAND cp "${CMAKE_CURRENT_BINARY_DIR}/lib${NAME}.h" "${OUTPUT_PATH}"
+                BYPRODUCTS ${CMAKE_CURRENT_BINARY_DIR}/lib${NAME}.so
                 SOURCES "${SRCS}" 
                 DEPENDS "go.mod")
 
