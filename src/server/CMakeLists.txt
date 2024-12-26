@@ -18,6 +18,6 @@ generate_code (
 )
 
 add_custom_target( maven_install  
-                    COMMAND mvn install:install-file -Dfile=${CMAKE_BINARY_DIR}/java/target/ov3endpoint-1.0.0.jar -DgroupId=org.kurento.module -DartifactId=ov3endpoint -Dversion=1.0.0 -Dpackaging=jar 
+                    COMMAND mvn install:install-file -Dfile=${CMAKE_BINARY_DIR}/java/target/ov3endpoint-1.0.0.jar -DgroupId=org.kurento.module -DartifactId=ov3endpoint-client -Dversion=1.0.0 -Dpackaging=jar 
                     COMMENT "Installing client library in local maven repository"
                     DEPENDS java )
