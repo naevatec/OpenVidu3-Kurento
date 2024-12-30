@@ -10,13 +10,13 @@ include_directories(
 )
 
 
-set(OV3_SUBSCRIBER_SOURCES
+set(OV3_ENDPOINT_SOURCES
   ov3subscriber.c ov3subscriber.h
   ov3publisher.c ov3publisher.h
   ov3endpoint.c
 )
 
-add_library(kmsov3endpoint MODULE ${OV3_SUBSCRIBER_SOURCES})
+add_library(kmsov3endpoint MODULE ${OV3_ENDPOINT_SOURCES})
 
 add_dependencies(${LIBRARY_NAME} ov3endpoint)
 target_link_libraries(${LIBRARY_NAME}
