@@ -327,7 +327,7 @@ func (b *ov3Subscriber) addAudioAppSrcBin(w *AppWriter) error {
 
 func (lk *ov3Subscriber) DoSynchronize(buffer *gst.Buffer) {
 	// FIXME: On upgrading to GStreamer 1.22 we should set the property of rtpjitterbuffer 'add-reference-timestamp-meta'
-	// That will allow to set on the buffer a GstReferenceTimestampMeta  with timing information got btoh from RTCP SR or inband
+	// That will allow to set on the buffer a GstReferenceTimestampMeta  with timing information got both from RTCP SR or inband
 	// NTP-64 header (that is used in webrtc and specifically in livekit) to provide better synchronization
 	// When that meta is available, we should get the meta, extract timing info (https://gstreamer.freedesktop.org/documentation/gstreamer/gstbuffer.html#GstReferenceTimestampMeta)
 	// and set the PTS of buffers according to that
@@ -446,7 +446,7 @@ func (lk *ov3Subscriber) addVideoAppSrcBin(w *AppWriter) error {
 		})
 	}
 
-	root.logger.Debugw(fmt.Sprintf("addVideoAppSrcBin: created h264 video bin for track %s and subcriber %s", w.pub.SID(), lk.id))
+	root.logger.Debugw(fmt.Sprintf("addVideoAppSrcBin: created %s video bin for track %s and subcriber %s", w.codec, w.pub.SID(), lk.id))
 	return nil
 }
 
