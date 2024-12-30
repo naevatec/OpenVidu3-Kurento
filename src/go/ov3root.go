@@ -67,7 +67,7 @@ func (rt *ov3Root) initLogger() {
 		timeSuffix := fmt.Sprintf("%d-%02d-%02dT%02d%02d%02d",
 			t.Year(), t.Month(), t.Day(),
 			t.Hour(), t.Minute(), t.Second())
-		rt.logr = NewFileLogger(logPath + "/golk_" + timeSuffix + ".log")
+		rt.logr = NewFileLogger(logPath + "/goov3_" + timeSuffix + ".log")
 		logger.InitFromConfig(&logger.Config{
 			Level: "debug",
 			ComponentLevels: map[string]string{
