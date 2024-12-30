@@ -1,6 +1,5 @@
 package com.naevatec.ov3.kurentofilter.controllers;
 
-import com.naevatec.ov3.kurentofilter.Ov3Filter;
 import com.naevatec.ov3.kurentofilter.config.EnvironmentConfig;
 import com.naevatec.ov3.kurentofilter.config.KmsConfig;
 import com.naevatec.ov3.kurentofilter.model.FilterRequest;
@@ -8,10 +7,8 @@ import com.naevatec.ov3.kurentofilter.utils.AccessPoints;
 
 import io.swagger.annotations.*;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 import javax.validation.Valid;
-import javax.xml.validation.Validator;
 
 import org.kurento.client.GStreamerFilter;
 import org.kurento.client.MediaPipeline;

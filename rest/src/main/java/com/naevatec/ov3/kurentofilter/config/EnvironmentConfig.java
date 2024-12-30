@@ -20,18 +20,20 @@ public class EnvironmentConfig {
 	public final static String DEFAULT_OV3_URL = "https://xxxx.xxxx";
 	public final static String DEFAULT_OV3_SECRET = "changeme";
 	public final static String DEFAULT_OV3_API_KEY = "changeme";
-
+	public final static String DEFAULT_API_PASS = "MY_SECRET";
 
 	public final static String PN_KURENTO_URL = "kurento.url";
-	public final static String PN_LOV3_URL = "ov3.url";
+	public final static String PN_OV3_URL = "ov3.url";
 	public final static String PN_OV3_SECRET = "ov3.secret";
 	public final static String PN_OV3_API_KEY = "ov3.apikey";
+	public final static String PN_API_PASS = "ov3.api_pass";
 
 	/* Config variables */
 	private String kurentoUrl;
 	private String ov3Url;
 	private String ov3Secret;
 	private String ov3ApiKey;
+	private String apiPass;
 
 	@Autowired
 	private Environment environment;
@@ -43,18 +45,19 @@ public class EnvironmentConfig {
 	}
 
 	private void logConfiguration() {
-		log.info("Gateway SIP Gateway configuration:");
+		log.info("REST API configuration:");
 		log.info("{}: {}", PN_KURENTO_URL, kurentoUrl);
-		log.info("{}: {}", PN_LOV3_URL, ov3Url);
+		log.info("{}: {}", PN_OV3_URL, ov3Url);
 		log.info("{}: {}", PN_OV3_SECRET, (ov3Secret != null) ? "provided" : "not provided");
 		log.info("{}: {}", PN_OV3_API_KEY, (ov3ApiKey != null) ? "provided" : "not provided");
 	}
 
 	private void readProperties() throws Exception {
 		this.kurentoUrl = environment.getProperty(PN_KURENTO_URL, DEFAULT_KURENTO_URL);
-		this.ov3Url = environment.getProperty(PN_LOV3_URL, DEFAULT_OV3_URL);
+		this.ov3Url = environment.getProperty(PN_OV3_URL, DEFAULT_OV3_URL);
 		this.ov3Secret = environment.getProperty(PN_OV3_SECRET, DEFAULT_OV3_SECRET);
 		this.ov3ApiKey = environment.getProperty(PN_OV3_API_KEY, DEFAULT_OV3_API_KEY);
+		this.apiPass = environment.getProperty(PN_API_PASS, DEFAULT_API_PASS);
 	}
 
 	public String getKurentoUrl() {
@@ -92,6 +95,14 @@ public class EnvironmentConfig {
 
 	public Boolean usingLiveKit () {
 		return !DEFAULT_OV3_URL.equals(ov3Url);
+	}
+
+	public String getApiPass() {
+		return apiPass;
+	}
+
+	public void setApiPass(String apiPass) {
+		this.apiPass = apiPass;
 	}
 
 }
