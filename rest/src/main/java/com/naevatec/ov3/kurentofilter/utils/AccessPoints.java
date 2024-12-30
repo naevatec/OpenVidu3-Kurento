@@ -7,12 +7,15 @@ public class AccessPoints {
 
 
 	// session
-	public static final String OV3_SESSION = V1_OV3 + "/{ov3RoomId}";
+	public static final String OV3_SESSION = "/{ov3RoomId}";
 
 	// participant
 	public static final String OV3_PARTICIPANT = OV3_SESSION + "/{participantId}";
 
 	// filter
 	public static final String OV3_FILTER = OV3_PARTICIPANT + "/filter";
+
+	// filter
+	public static final String OV3_PARTICIPANT_DOT = OV3_PARTICIPANT + "/dot";
 
 }

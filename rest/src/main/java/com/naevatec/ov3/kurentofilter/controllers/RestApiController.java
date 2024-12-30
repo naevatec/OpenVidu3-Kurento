@@ -4,14 +4,17 @@ import com.naevatec.ov3.kurentofilter.config.EnvironmentConfig;
 import com.naevatec.ov3.kurentofilter.config.KmsConfig;
 import com.naevatec.ov3.kurentofilter.model.FilterRequest;
 import com.naevatec.ov3.kurentofilter.utils.AccessPoints;
+import com.naevatec.ov3.kurentofilter.utils.JsonUtils;
 
 import io.swagger.annotations.*;
 import java.util.*;
 
 import javax.validation.Valid;
 
-import org.kurento.client.GStreamerFilter;
+import org.kurento.client.GenericMediaElement;
+import org.kurento.client.GstreamerDotDetails;
 import org.kurento.client.MediaPipeline;
+import org.kurento.jsonrpc.Props;
 import org.kurento.module.ov3endpoint.OV3Publisher;
 import org.kurento.module.ov3endpoint.OV3Subscriber;
 import org.slf4j.*;
@@ -38,14 +41,24 @@ public class RestApiController {
 	@Autowired
 	EnvironmentConfig env;
 
+	protected GenericMediaElement applyFilterInPublisher(MediaPipeline pipeline, String filterType, String filterOptions) {
+		GenericMediaElement.Builder builder = new GenericMediaElement.Builder(pipeline, filterType);
+		Props props = new JsonUtils().fromJsonObjectToProps(filterOptions);
+		props.forEach(prop -> {
+			builder.withConstructorParam(prop.getName(), prop.getValue());
+		});
+		return builder.build();
+	}	
+
 	private void createFilter (MediaPipeline pipeline,
 							   String sessionId,
 							   String participantId,
+							   String filterType,
 							   String filterStr)
 	{
 		OV3Publisher publisher;
 		OV3Subscriber subscriber;
-		GStreamerFilter filter;
+		GenericMediaElement filter;
 
 		publisher = new OV3Publisher.Builder(pipeline, 
 											 env.getOv3Url(),
@@ -60,12 +73,17 @@ public class RestApiController {
 											   env.getOv3ApiKey()).build();
 
 
-		filter = new GStreamerFilter.Builder(pipeline, filterStr).build();
+		filter = applyFilterInPublisher (pipeline, filterType, filterStr);
 
 		subscriber.connect(filter);
 		filter.connect(publisher);
 
-		subscriber.subscribeParticipant(sessionId, participantId, false);
+		if (!publisher.publishParticipant()) {
+			logger.warn("Could not publish participant {} in room {}", participantId+"_filtered", sessionId);
+		}
+		if (!subscriber.subscribeParticipant(sessionId, participantId, false)) {
+			logger.warn("Could not subscribe participant {} in room {}", participantId, sessionId);
+		}
 	}
 
 	@ApiOperation(value = "Add a filter to a participant stream in an OpenVIdu 3 session")
@@ -96,7 +114,7 @@ public class RestApiController {
 		pipe = kmsConfig.kurentoClient().createMediaPipeline();
 		participantsPipes.put(key, pipe);
 
-		createFilter (pipe, sessionId, participantId, filterRequest.getFilterCommand());
+		createFilter (pipe, sessionId, participantId, filterRequest.getFilterType(), filterRequest.getFilterCommand());
 
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
@@ -126,6 +144,34 @@ public class RestApiController {
 		pipe.release();
 
 		return new ResponseEntity<String> ("Filter correctly released", HttpStatus.OK);
+	}
+
+	@ApiOperation(value = "Removes a filter to a participant stream in an OpenVIdu 3 session")
+	@GetMapping(AccessPoints.OV3_PARTICIPANT_DOT)
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "Filter correctly setup"),
+		@ApiResponse(code = 400, message = "Filter already in place"),
+		@ApiResponse(code = 406, message = "Invalid parameters", response=String.class),
+		@ApiResponse(code = 500, message = "Internal server error", response=String.class),
+		@ApiResponse(code = 404, message = "OpenVidu 3 Session or participant or filter not found", response=Void.class)
+	})
+	public ResponseEntity<String> getFilterDotDump(
+		@PathVariable("ov3RoomId") String sessionId,
+		@PathVariable("participantId") String participantId) throws Exception {
+		logger.info("RestApiController.addFilter to {} in {} ", participantId, sessionId);
+
+		String key = sessionId+participantId;
+		MediaPipeline pipe = participantsPipes.get (key);
+		String dot;
+
+		if (pipe == null) {
+			logger.error("RestApiController.addFilter, filter not setup for {} in {}", participantId, sessionId);
+			return new ResponseEntity<String>("Filter not setup", HttpStatus.NOT_FOUND);
+		}
+
+		dot = pipe.getGstreamerDot(GstreamerDotDetails.SHOW_ALL);
+
+		return new ResponseEntity<String> (dot, HttpStatus.OK);
 	}
 
 
