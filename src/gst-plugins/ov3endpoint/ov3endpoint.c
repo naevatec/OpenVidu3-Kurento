@@ -39,4 +39,4 @@ GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     kmsov3endpoint,
     "Kurento OpenVidu3 endpoint",
     kms_ov3_endpoint_plugin_init, VERSION, GST_LICENSE_UNKNOWN,
-    "NaevaTec Kurento utils", "http://www.naevatec.com")
+    "Kurento OpenVidu3 endpoint", "http://www.naevatec.com")
