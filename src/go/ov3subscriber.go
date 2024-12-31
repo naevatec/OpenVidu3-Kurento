@@ -181,7 +181,7 @@ func createAppSrc(caps string, name string) (*app.Source, error) {
 	C.g_value_set_int64((*C.GValue)(maxBytesVal.Unsafe()), C.long(2000000))
 	appSource.SetPropertyValue(("max-bytes"), maxBytesVal)
 	appSource.SetProperty("block", true)
-	appSource.SetProperty("do-timestamp", true)
+	appSource.SetProperty("do-timestamp", false)
 	appSource.SetProperty("emit-signals", false)
 	appSource.SetProperty("caps", gst.NewCapsFromString(caps))
 	latVal, _ := glib.ValueInit(glib.TYPE_INT64)
@@ -199,7 +199,7 @@ func createJjitterBuffer(audio bool) (*gst.Element, error) {
 		latency = 200
 		jbName = "jitterbuffer_audio"
 	} else {
-		latency = 200
+		latency = 500
 		jbName = "jitterbuffer_video"
 	}
 
@@ -321,7 +321,7 @@ func (b *ov3Subscriber) addAudioAppSrcBin(w *AppWriter) error {
 	b.audioRtpSource = rtpSource
 	b.audioRtcpSource = rtcpSource
 
-	root.logger.Debugw(fmt.Sprintf("addAudioAppSrcBin: created audio bin for track %s and subcriber %s", w.pub.SID(), b.id))
+	root.logger.Debugw(fmt.Sprintf("addAudioAppSrcBin: created %s audio bin for track %s and subcriber %s", w.codec, w.pub.SID(), b.id))
 	return nil
 }
 
