@@ -200,7 +200,7 @@ func (w *AppWriter) PushRTCPPacket(pkt rtcp.Packet) {
 	var appSrc *app.Source
 
 	p, err := pkt.Marshal()
-	if err != nil {
+	if (err != nil) || (len(p) == 0) {
 		w.logger.Errorw("could not marshal RTCP packet", err)
 		root.logger.Debugw(fmt.Sprintf("ProcessRTCP: could not marshal RTCP packet %s", w.pub.SID()))
 		return
@@ -214,7 +214,7 @@ func (w *AppWriter) PushRTCPPacket(pkt rtcp.Packet) {
 		root.logger.Debugw(fmt.Sprintf("ProcessRTCP: RTCP packet received for track %s but no subscribers", w.pub.SID()))
 		return
 	}
-	//root.logger.Debugw(fmt.Sprintf("ProcessRTCP: RTCP packet received for track %s pushing downstream", w.pub.SID()))
+
 	for _, subscriber := range w.subscription.subscribers {
 
 		if subscriber != nil {
