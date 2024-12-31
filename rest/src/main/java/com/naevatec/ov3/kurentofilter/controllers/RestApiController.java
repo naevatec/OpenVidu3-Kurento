@@ -123,7 +123,6 @@ public class RestApiController {
 	@DeleteMapping(AccessPoints.OV3_PARTICIPANT)
 	@ApiResponses({
 		@ApiResponse(code = 200, message = "Filter correctly setup"),
-		@ApiResponse(code = 400, message = "Filter already in place"),
 		@ApiResponse(code = 406, message = "Invalid parameters", response=String.class),
 		@ApiResponse(code = 500, message = "Internal server error", response=String.class),
 		@ApiResponse(code = 404, message = "OpenVidu 3 Session or participant or filter not found", response=Void.class)
@@ -141,16 +140,16 @@ public class RestApiController {
 			return new ResponseEntity<String>("Filter not setup", HttpStatus.NOT_FOUND);
 		}
 
+		participantsPipes.remove(key);
 		pipe.release();
 
 		return new ResponseEntity<String> ("Filter correctly released", HttpStatus.OK);
 	}
 
-	@ApiOperation(value = "Removes a filter to a participant stream in an OpenVIdu 3 session")
+	@ApiOperation(value = "Generates a gstreamer dot dump for a filter pipeline that has been setup")
 	@GetMapping(AccessPoints.OV3_PARTICIPANT_DOT)
 	@ApiResponses({
 		@ApiResponse(code = 200, message = "Filter correctly setup"),
-		@ApiResponse(code = 400, message = "Filter already in place"),
 		@ApiResponse(code = 406, message = "Invalid parameters", response=String.class),
 		@ApiResponse(code = 500, message = "Internal server error", response=String.class),
 		@ApiResponse(code = 404, message = "OpenVidu 3 Session or participant or filter not found", response=Void.class)
