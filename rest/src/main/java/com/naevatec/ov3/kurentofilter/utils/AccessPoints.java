@@ -18,4 +18,10 @@ public class AccessPoints {
 	// filter
 	public static final String OV3_PARTICIPANT_DOT = OV3_PARTICIPANT + "/dot";
 
+	// method
+	public static final String OV3_METHOD = OV3_PARTICIPANT + "/exec";
+
+	// event
+	public static final String OV3_EVENT = OV3_PARTICIPANT + "/event/{event}";
+
 }

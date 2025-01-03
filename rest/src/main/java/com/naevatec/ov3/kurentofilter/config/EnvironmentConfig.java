@@ -21,12 +21,15 @@ public class EnvironmentConfig {
 	public final static String DEFAULT_OV3_SECRET = "changeme";
 	public final static String DEFAULT_OV3_API_KEY = "changeme";
 	public final static String DEFAULT_API_PASS = "MY_SECRET";
+	public final static String DEFAULT_WEBHOOK = "";
 
 	public final static String PN_KURENTO_URL = "kurento.url";
 	public final static String PN_OV3_URL = "ov3.url";
 	public final static String PN_OV3_SECRET = "ov3.secret";
 	public final static String PN_OV3_API_KEY = "ov3.apikey";
 	public final static String PN_API_PASS = "ov3.api_pass";
+	public final static String PN_WEBHOOK = "filter.webhook";
+
 
 	/* Config variables */
 	private String kurentoUrl;
@@ -34,6 +37,7 @@ public class EnvironmentConfig {
 	private String ov3Secret;
 	private String ov3ApiKey;
 	private String apiPass;
+	private String webhook;
 
 	@Autowired
 	private Environment environment;
@@ -50,6 +54,7 @@ public class EnvironmentConfig {
 		log.info("{}: {}", PN_OV3_URL, ov3Url);
 		log.info("{}: {}", PN_OV3_SECRET, (ov3Secret != null) ? "provided" : "not provided");
 		log.info("{}: {}", PN_OV3_API_KEY, (ov3ApiKey != null) ? "provided" : "not provided");
+		log.info("{}: {}", PN_WEBHOOK, webhook);
 	}
 
 	private void readProperties() throws Exception {
@@ -58,6 +63,7 @@ public class EnvironmentConfig {
 		this.ov3Secret = environment.getProperty(PN_OV3_SECRET, DEFAULT_OV3_SECRET);
 		this.ov3ApiKey = environment.getProperty(PN_OV3_API_KEY, DEFAULT_OV3_API_KEY);
 		this.apiPass = environment.getProperty(PN_API_PASS, DEFAULT_API_PASS);
+		this.webhook = environment.getProperty(PN_WEBHOOK, DEFAULT_WEBHOOK);
 	}
 
 	public String getKurentoUrl() {
@@ -103,6 +109,14 @@ public class EnvironmentConfig {
 
 	public void setApiPass(String apiPass) {
 		this.apiPass = apiPass;
+	}
+
+	public String getWebhook() {
+		return webhook;
+	}
+
+	public void setWebhook(String webhook) {
+		this.webhook = webhook;
 	}
 
 }

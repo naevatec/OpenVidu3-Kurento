@@ -4,8 +4,10 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Iterator;
 import java.util.Map.Entry;
 
+import org.kurento.jsonrpc.Prop;
 import org.kurento.jsonrpc.Props;
 
 import com.google.gson.Gson;
@@ -35,6 +37,31 @@ public class JsonUtils {
 			}
 		}
 		return props;
+	}
+
+	public String fromPropsToJsonObjectString (Props props) {
+		JsonObject o = fromPropsToJsonObject(props);
+
+		return o.getAsString();
+	}
+
+	public JsonObject fromPropsToJsonObject (Props props) {
+		Iterator<Prop> it = props.iterator();
+		JsonObject result = new JsonObject();
+
+		while (it.hasNext()) {
+			Prop p = it.next();
+
+			if (p.getValue() instanceof Props) {
+				JsonObject o = fromPropsToJsonObject((Props) p.getValue());
+
+				result.add(p.getName(), o);
+			} else {
+				result.addProperty(p.getName(), p.getValue().toString());
+			}
+		}
+
+		return result;
 	}
 
 	public JsonObject fromFileToJsonObject(String filePath)
