@@ -191,7 +191,7 @@ func createAppSrc(caps string, name string) (*app.Source, error) {
 	return appSource, nil
 }
 
-func createJjitterBuffer(audio bool) (*gst.Element, error) {
+func createJitterBuffer(audio bool) (*gst.Element, error) {
 	var latency int
 	var jbName string
 
@@ -245,11 +245,14 @@ func (lk *ov3Subscriber) prepareTrackGstBin(audio bool, bin *gst.Bin, trackId st
 	var depayloader *gst.Element
 	var err error
 	var desc string
+	var depayloader_name string
 
 	if audio {
 		desc = "audio"
+		depayloader_name = "depayloader_audio"
 	} else {
 		desc = "video"
+		depayloader_name = "depayloader_video"
 	}
 
 	root.logger.Debugw(fmt.Sprintf("prepareTrackGstBin: Building Gst Bin for %s track %s with media caps %s", desc, trackId, trackMediaCaps))
@@ -258,7 +261,7 @@ func (lk *ov3Subscriber) prepareTrackGstBin(audio bool, bin *gst.Bin, trackId st
 	if err != nil {
 		return nil, nil, err
 	}
-	jitterBuffer, err = createJjitterBuffer(audio)
+	jitterBuffer, err = createJitterBuffer(audio)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -268,7 +271,7 @@ func (lk *ov3Subscriber) prepareTrackGstBin(audio bool, bin *gst.Bin, trackId st
 		return nil, nil, err
 	}
 
-	depayloader, err = gst.NewElementWithName(depayFactory, "depayloader")
+	depayloader, err = gst.NewElementWithName(depayFactory, depayloader_name)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -419,6 +422,7 @@ func (lk *ov3Subscriber) addVideoAppSrcBin(w *AppWriter) error {
 				return gst.PadProbeOK
 			}
 
+			// FIXME: This can be done by depayloader now using request-keyframe and wait-for-keyframe properties, so this feature may not be needed anymore
 			if gapResult := w.verifyStreamGap(buffer); gapResult != gst.PadProbeOK {
 				return gapResult
 			}
