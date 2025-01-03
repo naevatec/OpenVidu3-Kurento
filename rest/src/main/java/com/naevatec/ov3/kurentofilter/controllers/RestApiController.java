@@ -50,7 +50,7 @@ public class RestApiController {
 		return builder.build();
 	}	
 
-	private void createFilter (MediaPipeline pipeline,
+	private String createFilter (MediaPipeline pipeline,
 							   String sessionId,
 							   String participantId,
 							   String filterType,
@@ -73,17 +73,22 @@ public class RestApiController {
 											   env.getOv3ApiKey()).build();
 
 
-		filter = applyFilterInPublisher (pipeline, filterType, filterStr);
-
-		subscriber.connect(filter);
-		filter.connect(publisher);
-
-		if (!publisher.publishParticipant()) {
-			logger.warn("Could not publish participant {} in room {}", participantId+"_filtered", sessionId);
+		try {
+			filter = applyFilterInPublisher (pipeline, filterType, filterStr);
+			subscriber.connect(filter);
+			filter.connect(publisher);
+	
+			if (!publisher.publishParticipant()) {
+				logger.warn("Could not publish participant {} in room {}", participantId+"_filtered", sessionId);
+			}
+			if (!subscriber.subscribeParticipant(sessionId, participantId, false)) {
+				logger.warn("Could not subscribe participant {} in room {}", participantId, sessionId);
+			}
+			return "";
+		} catch (Exception xcp) {
+			return xcp.toString();
 		}
-		if (!subscriber.subscribeParticipant(sessionId, participantId, false)) {
-			logger.warn("Could not subscribe participant {} in room {}", participantId, sessionId);
-		}
+
 	}
 
 	@ApiOperation(value = "Add a filter to a participant stream in an OpenVIdu 3 session")
@@ -104,6 +109,7 @@ public class RestApiController {
 
 		String key = sessionId+participantId;
 		MediaPipeline pipe = participantsPipes.get (key);
+		String filterResult;
 		
 
 		if (pipe != null) {
@@ -114,7 +120,11 @@ public class RestApiController {
 		pipe = kmsConfig.kurentoClient().createMediaPipeline();
 		participantsPipes.put(key, pipe);
 
-		createFilter (pipe, sessionId, participantId, filterRequest.getFilterType(), filterRequest.getFilterCommand());
+		filterResult = createFilter (pipe, sessionId, participantId, filterRequest.getFilterType(), filterRequest.getFilterCommand());
+		if (filterResult.length() > 0) {
+			participantsPipes.remove(key);
+			return new ResponseEntity<>(filterResult, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
