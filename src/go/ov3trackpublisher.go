@@ -270,6 +270,10 @@ func (trPub *ov3TrackPublisher) createSinkElementsForPublisher(kind lksdk.TrackK
 	if kind == lksdk.TrackKindAudio {
 		caps = gst.NewCapsFromString("audio/x-opus")
 	} else if kind == lksdk.TrackKindVideo {
+		// FIXME: before setting this caps, the real ones supported by remote browsers in SDP negpotiation should be examined to be in sync
+		// as this caps negotiation is not in sync with browser SDP negotiation.
+		// The main point is that we are not publishing to remote browser directly but to the SFU, so we cannot know wchich codecs will be supported
+		// If we are already subscribing to the same room, a good guess would be to use the same codec that is used on subscribed tracks.
 		caps = gst.NewCapsFromString("video/x-vp8;video/x-h264;video/x-vp9")
 	}
 	capsfilter.SetProperty("caps", caps)
@@ -455,7 +459,7 @@ func (tr *ov3TrackPublisher) PublishLocalTrack(ingressId string, screenShare boo
 		webrtcCodec = webrtc.MimeTypeOpus
 
 	default:
-		root.logger.Warnw(fmt.Sprintf("PublishLocalTrack: Codec %s not suppoted in publisher %s, %s", tr.codec, tr.publisher.id, &tr.kind), nil)
+		root.logger.Warnw(fmt.Sprintf("PublishLocalTrack: Codec %s not supported in publisher %s, %s", tr.codec, tr.publisher.id, &tr.kind), nil)
 		return
 	}
 	localTrack, err = tr.createPublishTrack(webrtcCodec)

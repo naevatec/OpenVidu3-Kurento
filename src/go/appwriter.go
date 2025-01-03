@@ -149,15 +149,20 @@ func (w *AppWriter) retransmitPacket(seqnum uint) {
 }
 
 func (w *AppWriter) EnterInGap() {
-	w.gapLock.Lock()
-	if w.dropping {
+	switch w.codec {
+	case types.MimeTypeH264, types.MimeTypeVP8, types.MimeTypeVP9:
+
+	default:
+		w.gapLock.Lock()
+		if w.dropping {
+			w.gapLock.Unlock()
+			return
+		}
+		w.dropping = true
 		w.gapLock.Unlock()
-		return
-	}
-	w.dropping = true
-	w.gapLock.Unlock()
-	if w.forceSendPLI != nil {
-		w.forceSendPLI()
+		if w.forceSendPLI != nil {
+			w.forceSendPLI()
+		}
 	}
 }
 
@@ -201,8 +206,8 @@ func (w *AppWriter) PushRTCPPacket(pkt rtcp.Packet) {
 
 	p, err := pkt.Marshal()
 	if (err != nil) || (len(p) == 0) {
-		w.logger.Errorw("could not marshal RTCP packet", err)
-		root.logger.Debugw(fmt.Sprintf("ProcessRTCP: could not marshal RTCP packet %s", w.pub.SID()))
+		w.logger.Errorw("PushRTCPPacket: could not marshal RTCP packet", err)
+		root.logger.Debugw(fmt.Sprintf("PushRTCPPacket: could not marshal RTCP packet %s", w.pub.SID()))
 		return
 	}
 
@@ -211,7 +216,7 @@ func (w *AppWriter) PushRTCPPacket(pkt rtcp.Packet) {
 	subscribers := w.subscription.subscribers
 	w.subscription.Unlock()
 	if (subscribers == nil) || (len(subscribers) == 0) {
-		root.logger.Debugw(fmt.Sprintf("ProcessRTCP: RTCP packet received for track %s but no subscribers", w.pub.SID()))
+		root.logger.Debugw(fmt.Sprintf("PushRTCPPacket: RTCP packet received for track %s but no subscribers", w.pub.SID()))
 		return
 	}
 
@@ -238,13 +243,13 @@ func (w *AppWriter) PushRTCPPacket(pkt rtcp.Packet) {
 			if appSrc != nil {
 				flow := appSrc.PushBuffer(b)
 				if flow != gst.FlowOK {
-					root.logger.Infow(fmt.Sprintf("ProcessRTCP: unexpected flow return %s", w.pub.SID()))
+					root.logger.Infow(fmt.Sprintf("PushRTCPPacket: unexpected flow return %s", w.pub.SID()))
 				}
 			} else {
-				root.logger.Debugw(fmt.Sprintf("pushPacket: no appsource available %s", w.pub.SID()))
+				root.logger.Debugw(fmt.Sprintf("PushRTCPPacket: no appsource available %s", w.pub.SID()))
 			}
 		} else {
-			root.logger.Infow(fmt.Sprintf("pushPacket: no subscriber for this track %s", w.pub.SID()))
+			root.logger.Debugw(fmt.Sprintf("PushRTCPPacket: no subscriber for this track %s", w.pub.SID()))
 		}
 	}
 }
@@ -412,54 +417,14 @@ func (w *AppWriter) handleReadError(err error) {
 	w.endStream.Break()
 }
 
-func isH264KeyFrameStart(pkt *rtp.Packet) bool {
-	if len(pkt.Payload) < 2 {
-		return false
-	}
-
-	// Keyframe start in H264 is identified by:
-	// - type of frame keyframe, byte 1 with 5 least sginificant bits set to value 5
-	// - First packet of FU-A picture: byte 1 with most significant bit to 1
-	identifier := pkt.Payload[0]
-	nalHeader := pkt.Payload[1]
-	nalType := nalHeader & 0x9f
-	if ((identifier & 0x1f) == 0x1c) && (nalType == 0x85) {
-		return true
-	}
-	// Either
-	// - First mb in slice set to 0: byte 1 most significant bit set to 1
-	// - I slice: byte 1 buts 6,5, and 4 set to 011
-	if ((identifier & 0x1f) == 0x05) && ((nalHeader & 0xf0) == 0xb0) {
-		return true
-	}
-	return false
-}
-
-func isVP8KeyFrameStart(pkt *rtp.Packet) bool {
-	if len(pkt.Payload) < 5 {
-		return false
-	}
-
-	// Keyframe start in vp8 identified by:
-	// - payload descriptor with start of VP8 partition (byte 0 with  bit 00010000)
-	// - payload header frame type keyframe, if start of partition it is byte 4  least signinfican bit to 0
-	descriptor := pkt.Payload[0]
-	header := pkt.Payload[4]
-	if (descriptor&0x10) == 1 && (header&0x01) == 0 {
-		return true
-	}
-	return false
-}
-
 func isKeyFrameStart(pkt *rtp.Packet, codec types.MimeType) bool {
 
 	switch codec {
-	case types.MimeTypeVP8:
-		return isVP8KeyFrameStart(pkt)
+	// For H264, VP8 and VP9 codecs stream gaps are managed in depayloaders
+	case types.MimeTypeVP8, types.MimeTypeH264, types.MimeTypeVP9:
+		return true
 
-	case types.MimeTypeH264:
-		return isH264KeyFrameStart(pkt)
-		// FIXME; add VP9
+		// FIXME: Mind about AV1 and H265 for future versions
 	}
 	return false
 }
@@ -524,7 +489,6 @@ func (w *AppWriter) pushPacket(pkt *rtp.Packet) error {
 			subscriber.Unlock()
 			if appSrc != nil {
 				flow := appSrc.PushBuffer(b)
-				//root.logger.Printf("pushPacket: pushed packet from track %s", w.pub.SID())
 				if flow != gst.FlowOK {
 					w.logger.Infow("unexpected flow return", "flow", flow)
 					root.logger.Infow(fmt.Sprintf("pushPacket: unexpected flow return %s", w.pub.SID()))
@@ -544,6 +508,7 @@ func (w *AppWriter) pushPacket(pkt *rtp.Packet) error {
 func (w *AppWriter) verifyStreamGap(buffer *gst.Buffer) gst.PadProbeReturn {
 	switch w.CheckStillInGap(buffer.Bytes()) {
 	case InGap:
+		root.logger.Debugw(fmt.Sprintf("verifyStreamGap: in gap, dropping buffer on track %s", w.pub.SID()))
 		return gst.PadProbeDrop
 	case EndGap:
 		return gst.PadProbeOK
@@ -554,6 +519,7 @@ func (w *AppWriter) verifyStreamGap(buffer *gst.Buffer) gst.PadProbeReturn {
 		if isGap != 0 {
 			if w.GapDetected(buffer.Bytes()) == InGap {
 				// Discontinuity found, unless this is a keyframe we must drop until a keyframe is found
+				root.logger.Debugw(fmt.Sprintf("verifyStreamGap: gap detected, dropping buffer on track %s", w.pub.SID()))
 				return gst.PadProbeDrop
 			}
 		}

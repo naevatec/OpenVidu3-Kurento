@@ -275,6 +275,11 @@ func (lk *ov3Subscriber) prepareTrackGstBin(audio bool, bin *gst.Bin, trackId st
 	if err != nil {
 		return nil, nil, err
 	}
+	// FIXME: This allows to move the stream gap detection and fixing to depayloders, but this is only defined in depayloaders
+	// for VP8, VP9 and H264 as of GStreamer 1.24.2 (ubuntu 24.04), for other codecs (AV1 and H265) we should care for gap detection
+	// however nor AV1 nor H265 are supported at the moment here and for this OpenVidu 3 version neither H265
+	depayloader.SetProperty("request-keyframe", true)
+	depayloader.SetProperty("wait-for-keyframe", true)
 
 	bin.AddMany(jitterBuffer, rtcpSource.Element, rtpSource.Element, depayloader)
 	rtpSource.Link(jitterBuffer)
@@ -422,9 +427,14 @@ func (lk *ov3Subscriber) addVideoAppSrcBin(w *AppWriter) error {
 				return gst.PadProbeOK
 			}
 
-			// FIXME: This can be done by depayloader now using request-keyframe and wait-for-keyframe properties, so this feature may not be needed anymore
-			if gapResult := w.verifyStreamGap(buffer); gapResult != gst.PadProbeOK {
-				return gapResult
+			// We moved stream gap detection feature to depayloader, but this only works with H264, VP8 and VP9 at the moment.
+			switch w.codec {
+			case types.MimeTypeH264, types.MimeTypeVP8, types.MimeTypeVP9:
+
+			default:
+				if gapResult := w.verifyStreamGap(buffer); gapResult != gst.PadProbeOK {
+					return gapResult
+				}
 			}
 
 			lk.DoSynchronize(buffer)
