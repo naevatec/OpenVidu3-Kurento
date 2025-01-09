@@ -1,0 +1,19 @@
+version: '3'
+services:
+  kurento:
+    build:
+      context: kurento
+      dockerfile: Dockerfile
+      sources:
+        - "additional:../"
+    network_mode: "host"
+  
+  rest:
+    build:
+      context: rest
+      dockerfile: Dockerfile
+      sources:
+        - "additional:../"
+    ports: 
+      - "8080:8080"
+

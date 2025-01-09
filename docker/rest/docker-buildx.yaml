@@ -1,0 +1,7 @@
+version: '1'
+contexts:
+  default:
+    dockerfile: Dockerfile
+    context: .
+  sources:
+    context: ../../
