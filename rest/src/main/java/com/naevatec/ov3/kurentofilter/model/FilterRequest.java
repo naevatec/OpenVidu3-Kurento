@@ -12,7 +12,7 @@ public class FilterRequest {
 	@NotBlank(message = "filterCommand must not be empty")
 	private String filterCommand;
 
-	@ApiModelProperty(notes = "Filter type (only GStreamerFilter supported at the momment)", required = true)
+	@ApiModelProperty(notes = "Filter type", required = true)
 	@NotBlank(message = "filterType must not be empty")
 	private String filterType;
 

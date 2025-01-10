@@ -27,8 +27,8 @@ public class SwaggerConfiguration {
 	}
 
 	public ApiInfo apiEndPointInfo() {
-		return new ApiInfoBuilder().title("Ov3 Filters Rest API").description(
-				"Ov3 filters").contact(
+		return new ApiInfoBuilder().title("OpenVidu 3 Filters REST API").description(
+				"OV3 filters").contact(
 				new Contact("NaevaTec", "https://www.naevatec.com/", "info@naevatec.com")).version(
 				"1.0.0").build();
 	}

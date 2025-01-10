@@ -20,7 +20,7 @@ public class EnvironmentConfig {
 	public final static String DEFAULT_OV3_URL = "https://xxxx.xxxx";
 	public final static String DEFAULT_OV3_SECRET = "changeme";
 	public final static String DEFAULT_OV3_API_KEY = "changeme";
-	public final static String DEFAULT_API_PASS = "MY_SECRET";
+	public final static String DEFAULT_API_PASS = "changeme";
 	public final static String DEFAULT_WEBHOOK = "";
 
 	public final static String PN_KURENTO_URL = "kurento.url";

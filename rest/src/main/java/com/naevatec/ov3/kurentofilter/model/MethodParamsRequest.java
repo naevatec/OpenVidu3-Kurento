@@ -12,7 +12,7 @@ public class MethodParamsRequest {
 	@NotBlank(message = "filter method must not be empty")
 	private String filterMethod;
 
-	@ApiModelProperty(notes = "Method params in Json structure", required = true)
+	@ApiModelProperty(notes = "Method params in JSON structure", required = true)
 	@NotBlank(message = "methodParams must not be empty")
 	private String methodParams;
 
