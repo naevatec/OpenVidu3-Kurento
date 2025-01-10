@@ -54,3 +54,5 @@ RUN apt install -y /tmp/ov3endpoint-dbg_1.0.0ubuntu1_amd64.deb
 
 RUN rm -f /tmp/ov3endpoint_1.0.0ubuntu1_amd64.deb && \
     rm -f /tmp/ov3endpoint-dbg_1.0.0ubuntu1_amd64.deb
+
+RUN apt update && apt install -y gstreamer1.0-opencv
