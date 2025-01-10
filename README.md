@@ -23,9 +23,9 @@ docker compose up -d
 ```
 Wait a little the first time, because compiling docker images can take some time on first run.
 
-Now if you start a session on the OpenVidu 3 service and some participant joins, a filter can be applied by issuing the corresponding REST API (take that roomId is `test-filter`and participantID `saul`)
+Now if you start a session on the OpenVidu 3 service and some participant joins, a filter can be applied by issuing the corresponding REST API (take that roomId is `test-filter`and participantID `test`)
 ```console
-curl -X POST "http://localhost:8080/v1/ov3/filter/test-filter/saul" -H "accept: */*" -H "Content-Type: application/json" -d "{ \"filterOptions\": \"{\\\"command\\\":\\\"videoflip method=vertical-flip\\\"}\", \"filterType\": \"GStreamerFilter\"}"
+curl -X POST "http://localhost:8080/v1/ov3/filter/test-filter/test" -H "accept: */*" -H "Content-Type: application/json" -d "{ \"filterOptions\": \"{\\\"command\\\":\\\"videoflip method=vertical-flip\\\"}\", \"filterType\": \"GStreamerFilter\"}"
 
 ```
 You can also use the swagger gui on `http://localhost:8080/swagger-ui.html`for simplicity.
@@ -34,7 +34,7 @@ You can also use the swagger gui on `http://localhost:8080/swagger-ui.html`for s
 Also, removing the subscription is done easily byt issuing the REST DELETE API
 
 ```console
-curl -X DELETE "http://localhost:8080/v1/ov3/filter/test-filter/saul" -H "accept: */*"
+curl -X DELETE "http://localhost:8080/v1/ov3/filter/test-filter/test" -H "accept: */*"
 ```
 
 
