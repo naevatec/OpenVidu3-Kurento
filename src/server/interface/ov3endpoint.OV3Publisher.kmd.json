@@ -99,6 +99,8 @@
       ],
       "methods": [
         {
+
+          
           "name": "publishParticipant",
           "doc": "Publishes to a OpenVidu3 participant in a room, distinguishes screen share or not",
           "params": [
