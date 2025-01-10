@@ -57,4 +57,4 @@ RUN apt-get update && apt-get install -y openjdk-11-jre && \
 
 EXPOSE 8080/tcp
 
-ENTRYPOINT [ "java -jar ov3-kurento-filters-1.0.0.jar" ]
+ENTRYPOINT java -jar /ov3-kurento-filters-1.0.0.jar

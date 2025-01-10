@@ -1,19 +1,21 @@
-version: '3'
 services:
   kurento:
     build:
       context: kurento
       dockerfile: Dockerfile
-      sources:
-        - "additional:../"
-    network_mode: "host"
+      additional_contexts:
+        sources: "../"
   
   rest:
+    env_file:
+      - .env
     build:
       context: rest
       dockerfile: Dockerfile
-      sources:
-        - "additional:../"
+      additional_contexts:
+        sources: "../"
     ports: 
       - "8080:8080"
+    depends_on:
+      - kurento
 
