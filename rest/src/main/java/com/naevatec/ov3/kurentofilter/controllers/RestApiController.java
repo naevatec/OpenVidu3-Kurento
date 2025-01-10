@@ -232,7 +232,7 @@ public class RestApiController {
 		try {
 			pipe = kmsConfig.kurentoClient().createMediaPipeline();
 
-			filterResult = createFilter (pipe, sessionId, participantId, filterRequest.getFilterType(), filterRequest.getFilterCommand());
+			filterResult = createFilter (pipe, sessionId, participantId, filterRequest.getFilterType(), filterRequest.getFilterOptions());
 			filterResult.setSessionId(sessionId);
 			filterResult.setParticipant(participantId);
 			participantsPipes.put(key, filterResult);

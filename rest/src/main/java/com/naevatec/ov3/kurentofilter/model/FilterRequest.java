@@ -8,20 +8,20 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(description = "Request for adding a filter to OV3 participant")
 public class FilterRequest {
 
-	@ApiModelProperty(notes = "Filter command", required = true)
-	@NotBlank(message = "filterCommand must not be empty")
-	private String filterCommand;
+	@ApiModelProperty(notes = "Filter options", required = true)
+	@NotBlank(message = "filterOptions must not be empty")
+	private String filterOptions;
 
 	@ApiModelProperty(notes = "Filter type", required = true)
 	@NotBlank(message = "filterType must not be empty")
 	private String filterType;
 
-    public String getFilterCommand() {
-        return filterCommand;
+    public String getFilterOptions() {
+        return filterOptions;
     }
 
-    public void setFilterCommand(String filterCommand) {
-        this.filterCommand = filterCommand;
+    public void setFilterOptions(String filterCommand) {
+        this.filterOptions = filterCommand;
     }
 
     public String getFilterType() {
@@ -34,7 +34,7 @@ public class FilterRequest {
 
     @Override
     public String toString() {
-        return "FilterRequest [filterCommand=" + filterCommand + ", filterType=" + filterType + "]";
+        return "FilterRequest [filterCommand=" + filterOptions + ", filterType=" + filterType + "]";
     }
     
 }
