@@ -6,7 +6,7 @@ services:
       additional_contexts:
         sources: "../"
     network_mode: host
-    restar: on-failure
+    restart: on-failure
   
   rest:
     env_file:
@@ -17,8 +17,7 @@ services:
       additional_contexts:
         sources: "../"
     restart: on-failure
-    ports: 
-      - "8080:8080"
+    network_mode: host
     depends_on:
       - kurento
 
