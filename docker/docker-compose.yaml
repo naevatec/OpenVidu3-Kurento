@@ -5,6 +5,8 @@ services:
       dockerfile: Dockerfile
       additional_contexts:
         sources: "../"
+    network_mode: host
+    restar: on-failure
   
   rest:
     env_file:
@@ -14,6 +16,7 @@ services:
       dockerfile: Dockerfile
       additional_contexts:
         sources: "../"
+    restart: on-failure
     ports: 
       - "8080:8080"
     depends_on:
