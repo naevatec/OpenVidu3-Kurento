@@ -29,12 +29,23 @@ curl -X POST "http://localhost:8080/v1/ov3/filter/test-filter/user" -H "accept: 
 ```
 You can also use the swagger gui on `http://localhost:8080/swagger-ui.html`for simplicity.
 
+You should see in the same room a new participant with the result of the participant media filtered according to the specified command:
+<img src="./doc/img/edgedetect.png" alt="edgedetect filter" width="500">
+
+
 
 Also, removing the subscription is done easily byt issuing the REST DELETE API
 
 ```console
 curl -X DELETE "http://localhost:8080/v1/ov3/filter/test-filter/user" -H "accept: */*"
 ```
+
+You can play trying different filters like `facedetect` this way:
+```console
+curl -X POST "http://localhost:8080/v1/ov3/filter/test-filter/user" -H "accept: */*" -H "Content-Type: application/json" -d "{ \"filterOptions\": \"{\\\"command\\\":\\\"facedetect\\\"}\", \"filterType\": \"GStreamerFilter\"}"
+```
+<img src="./doc/img/facedetect.png" alt="facedetect filter" width="500">
+
 
 
 ## Ov3Endpoint
